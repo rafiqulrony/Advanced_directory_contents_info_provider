@@ -1,0 +1,3 @@
+Total 6 folders, 14 files
+
+Hidden: folder=1(direct); files=2 (one direct, another indirect)
