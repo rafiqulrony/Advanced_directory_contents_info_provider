@@ -12,6 +12,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -133,22 +135,22 @@ class MainGUI extends JFrame {
 		rdbtnDIFDD.setBounds(17, 145, 333, 41);
 		contentPane.add(rdbtnDIFDD);
 		radioGroup1.add(rdbtnDIFDD);
+		
+		final JRadioButton rdbtnNormal = new JRadioButton("Normal", true);
+		rdbtnNormal.setBounds(362, 55, 109, 23);
+		contentPane.add(rdbtnNormal);
 
 		final JRadioButton rdbtnHidden = new JRadioButton("Hidden");
-		rdbtnHidden.setBounds(362, 55, 109, 23);
+		rdbtnHidden.setBounds(362, 81, 109, 23);
 		contentPane.add(rdbtnHidden);
 
-		final JRadioButton rdbtnNonHidden = new JRadioButton("Non-Hidden", true);
-		rdbtnNonHidden.setBounds(362, 81, 109, 23);
-		contentPane.add(rdbtnNonHidden);
-
-		final JRadioButton rdbtnBothHN = new JRadioButton("Hidden & non-hidden");
+		final JRadioButton rdbtnBothHN = new JRadioButton("Normal & hidden");
 		rdbtnBothHN.setBounds(362, 107, 168, 23);
 		contentPane.add(rdbtnBothHN);
 
 		ButtonGroup radioGroup3 = new ButtonGroup();
 		radioGroup3.add(rdbtnHidden);
-		radioGroup3.add(rdbtnNonHidden);
+		radioGroup3.add(rdbtnNormal);
 		radioGroup3.add(rdbtnBothHN);
 
 		JButton btnSelectADirectory = new JButton("Select a directory...");
@@ -250,7 +252,15 @@ class MainGUI extends JFrame {
 						if (saveDialogSelectedOption == JFileChooser.APPROVE_OPTION)
 						{
 							textFilePath = nameAndLocationChooser.getSelectedFile().toPath();
-							fileCreationStatus = FileOperations.createTheFile(textFilePath, ".txt");
+							
+							String pathString = textFilePath.toString();
+							if (!pathString.endsWith(".txt"))
+							{
+								pathString = pathString + ".txt";
+								textFilePath = Paths.get(pathString);
+							}
+							
+							fileCreationStatus = FileOperations.createTheFile(textFilePath);
 						}
 						else
 							return;
@@ -270,19 +280,19 @@ class MainGUI extends JFrame {
 					{
 						if (rdbtnDIFDD.isSelected())
 						{
-							directOrIndirectFile = " direct-indirect";
-							directOrIndirectDirectory = " direct";
+							directOrIndirectFile = "Both kinds";
+							directOrIndirectDirectory = "Direct";
 						}
 						else if (rdbtnIndirect.isSelected())
 						{
-							directOrIndirectFile = " indirect";
-							directOrIndirectDirectory = " indirect";
+							directOrIndirectFile = "Indirect";
+							directOrIndirectDirectory = "Indirect";
 						}
 						else
 						// if(rdbtnBothDI.isSelected())
 						{
-							directOrIndirectFile = " direct-indirect";
-							directOrIndirectDirectory = " direct-indirect";
+							directOrIndirectFile = "Both kinds";
+							directOrIndirectDirectory = "Both kinds";
 						}
 
 						try
@@ -305,16 +315,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "file";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectIndirectHiddenFiles(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectIndirectNonHiddenFiles(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectIndirectFiles(selectedDirectoryPath);
+							}
 						}
 
 						else if (rdbtnDirectories.isSelected() && rdbtnBothDI.isSelected())
@@ -322,16 +335,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "directory";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectIndirectHiddenDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectIndirectNonHiddenDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectIndirectDirectories(selectedDirectoryPath);
+							}
 						}
 
 						else if (rdbtnBothFD.isSelected() && rdbtnBothDI.isSelected())
@@ -339,16 +355,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "both";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectIndirectHiddenFilesDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectIndirectNonHiddenFilesDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectIndirectFilesDirectories(selectedDirectoryPath);
+							}
 						}
 
 						/////////////// INDIRECT PART////////////////
@@ -358,17 +377,20 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "file";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterIndirectHiddenFiles(selectedDirectoryPath);
 							}
 
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterIndirectNonHiddenFiles(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterIndirectFiles(selectedDirectoryPath);
+							}
 						}
 
 						else if (rdbtnDirectories.isSelected() && rdbtnIndirect.isSelected())
@@ -376,16 +398,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "directory";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterIndirectHiddenDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterIndirectNonHiddenDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterIndirectDirectories(selectedDirectoryPath);
+							}
 						}
 
 						else if (rdbtnBothFD.isSelected() && rdbtnIndirect.isSelected())
@@ -393,16 +418,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "both";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterIndirectHiddenFilesDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterIndirectNonHiddenFilesDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterIndirectFilesDirectories(selectedDirectoryPath);
+							}
 						}
 
 						////////////// EXTRA OPTION//////////////////
@@ -413,18 +441,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "both";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectHiddenDirectories(selectedDirectoryPath);
 								resultFilter.filterDirectIndirectHiddenFiles(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectNonHiddenDirectories(selectedDirectoryPath);
 								resultFilter.filterDirectIndirectNonHiddenFiles(selectedDirectoryPath);
 							}
 							else
 							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectDirectories(selectedDirectoryPath);
 								resultFilter.filterDirectIndirectFiles(selectedDirectoryPath);
 							}
@@ -437,23 +466,26 @@ class MainGUI extends JFrame {
 					else
 					// if(rdbtnDirect.isSelected())
 					{
-						directOrIndirectFile = " direct";
-						directOrIndirectDirectory = " direct";
+						directOrIndirectFile = "Direct";
+						directOrIndirectDirectory = "Direct";
 						if (rdbtnFiles.isSelected() && rdbtnDirect.isSelected())
 						{
 							fileOrDirectory = "file";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectHiddenFiles(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectNonHiddenFiles(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectFiles(selectedDirectoryPath);
+							}
 						}
 
 						else if (rdbtnDirectories.isSelected() && rdbtnDirect.isSelected())
@@ -461,16 +493,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "directory";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectHiddenDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectNonHiddenDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectDirectories(selectedDirectoryPath);
+							}
 						}
 
 						else
@@ -479,16 +514,19 @@ class MainGUI extends JFrame {
 							fileOrDirectory = "both";
 							if (rdbtnHidden.isSelected())
 							{
-								hiddenOrNot = " hidden";
+								hiddenOrNot = "Hidden";
 								resultFilter.filterDirectHiddenFilesDirectories(selectedDirectoryPath);
 							}
-							else if (rdbtnNonHidden.isSelected())
+							else if (rdbtnNormal.isSelected())
 							{
-								hiddenOrNot = " non-hidden";
+								hiddenOrNot = "Normal";
 								resultFilter.filterDirectNonHiddenFilesDirectories(selectedDirectoryPath);
 							}
 							else
+							{
+								hiddenOrNot = "Both kinds";
 								resultFilter.filterDirectFilesDirectories(selectedDirectoryPath);
+							}
 						}
 
 						if (resultFilter.directoryStreamStatus == "failed")
