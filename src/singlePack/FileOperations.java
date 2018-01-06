@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JOptionPane;
@@ -14,16 +13,8 @@ import javax.swing.JOptionPane;
 class FileOperations {
 
 	///////// CREATE A FILE REFERENCE FOR SAVING THE RESULT-LIST////////
-	static boolean createTheFile(Path textFilePath, String extension)
+	static boolean createTheFile(Path textFilePath)
 	{
-
-		String pathString = textFilePath.toString();
-		if (!pathString.endsWith(extension))
-		{
-			pathString = pathString + extension;
-			textFilePath = Paths.get(pathString);
-		}
-
 		try
 		{
 			textFilePath = Files.createFile(textFilePath);
@@ -65,28 +56,50 @@ class FileOperations {
 	static boolean writeToTheFile(Path selectedDirectoryPath, Path textFilePath, ArrayList<String> myList, int noOfF, int noOfD, String dOrIF, String dOrID, String hOrN, String fOrD)
 	{
 
-		String firstLine;
+		String metaDataString;
+		String sp = System.lineSeparator();
 
 		if (fOrD == "directory")
-			firstLine = noOfD + dOrID + hOrN + " directories could be accessed in this directory: "
-					+ selectedDirectoryPath.toString();
+			metaDataString = "||Source directory = " + selectedDirectoryPath.toString()
+			+ sp+"||"+sp+"||" + "Directory statistics:"
+			+ sp+"||" + "Number of directories = " + noOfD
+			+ sp+"||" + "Direct or indirect? " + dOrID
+			+ sp+"||" + "Normal or hidden? " + hOrN
+			+ sp+"||"+sp+"||" + "(A directory below without a location means that the directory is the direct member of the selected directory.)"
+			+ sp + "||________________________________________"
+			+ sp + "The list is provided below:::"
+			+ sp + "____________________________________________" + sp;
 		else if (fOrD == "file")
-			firstLine = noOfF + dOrIF + hOrN + " files could be accessed in this directory: "
-					+ selectedDirectoryPath.toString();
+			metaDataString = "||Source directory = " + selectedDirectoryPath.toString()
+			+ sp+"||"+sp+"||" + "File statistics:"
+			+ sp+"||" + "Number of files = " + noOfF
+			+ sp+"||" + "Direct or indirect? " + dOrIF
+			+ sp+"||" + "Normal or hidden? " + hOrN
+			+ sp+"||"+sp+"||" + "(A file below without a location means that the file is the direct member of the selected directory.)"
+			+ sp + "||________________________________________"
+			+ sp + "The list is provided below:::"
+			+ sp + "____________________________________________" + sp;
 		else
 			// if(fOrD=="both")
-			firstLine = noOfD + dOrID + hOrN + " directories & " + noOfF + dOrIF + hOrN
-					+ " files could be accessed in this directory: " + selectedDirectoryPath.toString();
+			metaDataString = "||Source directory = " + selectedDirectoryPath.toString()
+			+ sp+"||"+sp+"||" + "Directory statistics:"
+			+ sp+"||" + "Number of directories = " + noOfD
+			+ sp+"||" + "Direct or indirect? " + dOrID
+			+ sp+"||" + "Normal or hidden? " + hOrN
+			+ sp+"||"+sp+"||" + "File statistics:"
+			+ sp+"||" + "Number of files = " + noOfF
+			+ sp+"||" + "Direct or indirect? " + dOrIF
+			+ sp+"||" + "Normal or hidden? " + hOrN
+			+ sp+"||"+sp+"||" + "(A directory/file below without a location means that the directory/file is the direct member of the selected directory.)"
+			+ sp + "||________________________________________"
+			+ sp + "The list is provided below:::"
+			+ sp + "____________________________________________" + sp;
 
 		try
 		{
 			BufferedWriter bw = Files.newBufferedWriter(textFilePath, StandardCharsets.UTF_8);
 
-			bw.write(firstLine);
-			bw.newLine();
-			bw.write("(A DIRECTORY/FILE BELOW WITHOUT A LOCATION MEANS THAT THE DIRECTORY/FILE IS THE DIRECT MEMBER OF THE SELECTED DIRECTORY.)");
-			bw.newLine();
-			bw.newLine();
+			bw.write(metaDataString);
 
 			Collections.sort(myList);
 
