@@ -711,5 +711,4 @@ class ResultFilter {
 				return;
 			}
 	}
-
 }
