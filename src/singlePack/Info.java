@@ -12,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -31,7 +30,7 @@ class Info extends JDialog {
 		setBounds(100, 100, 447, 300);
 		getContentPane().setLayout(null);
 
-		lblVersion = new JLabel("Advanced Directory Contents Information Provider (version 2.0.12.9.2017)");
+		lblVersion = new JLabel("Advanced Directory Contents Information Provider (version 2.1.25.11.2017)");
 		lblVersion.setBounds(20, 23, 400, 14);
 		getContentPane().add(lblVersion);
 
